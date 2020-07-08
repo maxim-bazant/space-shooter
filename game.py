@@ -1,4 +1,4 @@
-#  tutorial 1 - basic pygame info
+#  tutorial 2 - spaceship movement
 
 import pygame
 

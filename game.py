@@ -35,12 +35,12 @@ class SpaceShip(object):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_d]:
-            self.x += 5
+            self.x += 10
             self.rotate(True, False)
             win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
 
         elif keys[pygame.K_a]:
-            self.x -= 5
+            self.x -= 10
             self.rotate(False, True)
             win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
 
@@ -50,6 +50,9 @@ class SpaceShip(object):
                     self.rotation_angle += 1
                 elif self.rotation_angle > 0:
                     self.rotation_angle -= 1
+
+            elif self.rotation_angle == 0:
+                self.y = win_height - self.height - 50
 
             win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
 

@@ -4,7 +4,7 @@ import pygame
 
 pygame.init()
 
-win_width, win_height = 1000, 900
+win_width, win_height = 1200, 900
 win = pygame.display.set_mode((win_width, win_height))
 win_caption = pygame.display.set_caption("space shooter game")
 
@@ -25,23 +25,25 @@ class SpaceShip(object):
         self.rotation_angle = 0
 
     def rotate(self, right: bool, left: bool):
-        if right and self.rotation_angle > -5:
+        if right and self.rotation_angle > -3:
             self.rotation_angle -= 1
 
-        elif left and self.rotation_angle < 5:
+        elif left and self.rotation_angle < 3:
             self.rotation_angle += 1
 
     def move(self):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_d]:
-            self.x += 10
-            self.rotate(True, False)
+            if self.x < win_width - self.width - 20:  # the ten is just that the space ship does not toch the edge
+                self.x += 10
+                self.rotate(True, False)
             win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
 
         elif keys[pygame.K_a]:
-            self.x -= 10
-            self.rotate(False, True)
+            if self.x > 10:  # the ten is just that the space ship does not toch the edge, it is just fo looks
+                self.x -= 10
+                self.rotate(False, True)
             win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
 
         else:

@@ -41,7 +41,7 @@ class SpaceShip(object):
             win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
 
         elif keys[pygame.K_a]:
-            if self.x > 10:  # the ten is just that the space ship does not toch the edge, it is just fo looks
+            if self.x > 10:  # the ten is just that the space ship does not touch the edge, it is just fo looks
                 self.x -= 10
                 self.rotate(False, True)
             win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
@@ -57,6 +57,19 @@ class SpaceShip(object):
                 self.y = win_height - self.height - 50
 
             win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
+
+
+class Missile(object):
+    def __init__(self):
+        self.image = pygame.image.load("images/missile.png")
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+        self.x = space_ship.x + self.width // 2
+        self.y = space_ship.y
+        self.missile_list = []
+
+    def move(self):
+        pass
 
 
 space_ship = SpaceShip()

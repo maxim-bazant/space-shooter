@@ -25,9 +25,9 @@ class SpaceShip(object):
         self.rotation_angle = 0
         self.right = False
         self.left = False
-        self.vel = 10
+        self.vel = 12
         self.health = 10
-        self.hitbox = (self.x, self.y, self.width, self.height)
+        self.hit_box = (self.x, self.y, self.width, self.height)
 
     def rotate(self, right: bool, left: bool):
         if right and self.rotation_angle > -3:
@@ -61,7 +61,7 @@ class SpaceShip(object):
 
             win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
 
-    def healt_bar(self):
+    def health_bar(self):
         pygame.draw.rect(win, (255, 0, 0), (self.x, self.y + self.height + 20, self.width, 10))
         pygame.draw.rect(win, (0, 255, 0), (self.x, self.y + self.height + 20, self.width / 10 * self.health, 10))
 
@@ -111,7 +111,7 @@ while running:
 
         win.fill((5, 0, 30))  # space color
         space_ship.move()
-        space_ship.healt_bar()
+        space_ship.health_bar()
 
         for bullet in bullets:
             if bullet.y > 0 - bullet.height:

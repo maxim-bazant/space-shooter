@@ -82,22 +82,6 @@ class Missile(object):
         self.y -= self.vel
 
 
-class Meteor(object):
-    def __init__(self):
-        self.image = pygame.image.load("images/meteor.png").convert_alpha()
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
-        self.x = random.randint(self.width, win_width - self.width)
-        self.y = 0 - self.height
-        self.hit_box = (self.x, self.y, self.width, self.height)
-        self.vel = 7
-
-    def move(self):
-        win.blit(self.image, (self.x, self.y))
-
-        self.y += self.vel
-
-
 space_ship = SpaceShip()
 
 bullets = []
@@ -146,18 +130,6 @@ while running:
 
         if bullet_count != 13:
             bullet_count += 1
-
-        if meteor_count == 0:
-            meteors.append(Meteor())
-
-        for meteor in meteors:
-            if meteor.y > meteor.y - meteor.height:
-                meteor.move()
-            else:
-                meteors.remove(meteor)
-
-        if meteor_count == 80:
-            meteor_count = -1
 
         pygame.display.update()
         clock.tick(FPS)

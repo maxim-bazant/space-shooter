@@ -1,4 +1,4 @@
-#  tutorial 2 - spaceship movement
+#  tutorial 3 - meteor
 
 import pygame
 import random

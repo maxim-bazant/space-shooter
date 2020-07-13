@@ -1,4 +1,4 @@
-#  tutorial 2 - spaceship movement
+#  tutorial 2 - spaceship movement and shooting
 
 import pygame
 import random

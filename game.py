@@ -1,6 +1,7 @@
 #  tutorial 2 - spaceship movement
 
 import pygame
+import random
 
 pygame.init()
 
@@ -12,7 +13,7 @@ running = True
 
 clock = pygame.time.Clock()
 
-FPS = 30
+FPS = 60
 
 
 class SpaceShip(object):
@@ -25,7 +26,7 @@ class SpaceShip(object):
         self.rotation_angle = 0
         self.right = False
         self.left = False
-        self.vel = 12
+        self.vel = 8
         self.health = 10
         self.hit_box = (self.x, self.y, self.width, self.height)
 
@@ -68,12 +69,12 @@ class SpaceShip(object):
 
 class Missile(object):
     def __init__(self):
-        self.image = pygame.image.load("images/missile.png")
+        self.image = pygame.image.load("images/missile.png").convert_alpha( )
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.x = space_ship.x + space_ship.width // 2
         self.y = space_ship.y
-        self.vel = 10
+        self.vel = 5
 
     def move(self):
         win.blit(self.image, (self.x, self.y))
@@ -81,9 +82,29 @@ class Missile(object):
         self.y -= self.vel
 
 
+class Meteor(object):
+    def __init__(self):
+        self.image = pygame.image.load("images/meteor.png").convert_alpha()
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
+        self.x = random.randint(self.width, win_width - self.width)
+        self.y = 0 - self.height
+        self.hit_box = (self.x, self.y, self.width, self.height)
+        self.vel = 7
+
+    def move(self):
+        win.blit(self.image, (self.x, self.y))
+
+        self.y += self.vel
+
+
 space_ship = SpaceShip()
+
 bullets = []
-bullet_count = 15
+bullet_count = 13
+
+meteors = []
+meteor_count = 0
 
 while running:
     for event in pygame.event.get():
@@ -91,6 +112,8 @@ while running:
             running = False
 
     if space_ship.health != 0:
+        meteor_count += 1
+
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_d]:
@@ -105,22 +128,36 @@ while running:
             space_ship.right = False
             space_ship.left = False
 
-        if keys[pygame.K_SPACE] and bullet_count == 15:
+        if keys[pygame.K_SPACE] and bullet_count == 13:
             bullets.append(Missile())
             bullet_count = 0
 
         win.fill((5, 0, 30))  # space color
+
         space_ship.move()
         space_ship.health_bar()
 
+        # bullets
         for bullet in bullets:
             if bullet.y > 0 - bullet.height:
                 bullet.move()
             else:
-                bullets.pop(0)
+                bullets.remove(bullet)
 
-        if bullet_count != 15:
+        if bullet_count != 13:
             bullet_count += 1
+
+        if meteor_count == 0:
+            meteors.append(Meteor())
+
+        for meteor in meteors:
+            if meteor.y > meteor.y - meteor.height:
+                meteor.move()
+            else:
+                meteors.remove(meteor)
+
+        if meteor_count == 80:
+            meteor_count = -1
 
         pygame.display.update()
         clock.tick(FPS)

@@ -1,4 +1,4 @@
-#  tutorial 3 - meteor
+#  tutorial 3 - meteor + explosion
 
 import pygame
 import random
@@ -75,6 +75,7 @@ class Missile(object):
         self.x = space_ship.x + space_ship.width // 2
         self.y = space_ship.y
         self.vel = 5
+        self.hit_box = (self.x, self.y, self.width, self.height)
 
     def move(self):
         win.blit(self.image, (self.x, self.y))
@@ -112,7 +113,7 @@ class Explosion(object):
 space_ship = SpaceShip()
 
 bullets = []
-bullet_count = 13
+bullet_count = 20
 
 meteors = []
 meteor_count = 0
@@ -139,7 +140,7 @@ while running:
             space_ship.right = False
             space_ship.left = False
 
-        if keys[pygame.K_SPACE] and bullet_count == 13:
+        if keys[pygame.K_SPACE] and bullet_count == 20:
             bullets.append(Missile())
             bullet_count = 0
 
@@ -155,12 +156,13 @@ while running:
             else:
                 bullets.remove(bullet)
 
-        if bullet_count != 13:
+        if bullet_count != 20:
             bullet_count += 1
 
         if meteor_count == 0:
             meteors.append(Meteor())
 
+        # meteors
         for meteor in meteors:
             if meteor.y > meteor.y - meteor.height:
                 meteor.move()
@@ -169,6 +171,8 @@ while running:
 
         if meteor_count == 80:
             meteor_count = -1
+
+        # collision
 
         pygame.display.update()
         clock.tick(FPS)

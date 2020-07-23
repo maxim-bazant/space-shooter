@@ -98,6 +98,17 @@ class Meteor(object):
         self.y += self.vel
 
 
+class Explosion(object):
+    def __init__(self):
+        images = list()
+
+        for i in ["01", "02", "03", "04"]:
+            images.append(pygame.image.load(f"images/explosion{i}.png").convert_alpha())
+
+    def show_explosion(self):
+        pass
+
+
 space_ship = SpaceShip()
 
 bullets = []

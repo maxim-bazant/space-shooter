@@ -1,7 +1,8 @@
-#  tutorial 3 - meteor + explosion
+#  tutorial 3 - meteor + explosion + collision
 
 import pygame
 import random
+import time
 
 pygame.init()
 
@@ -69,7 +70,7 @@ class SpaceShip(object):
 
 class Missile(object):
     def __init__(self):
-        self.image = pygame.image.load("images/missile.png").convert_alpha( )
+        self.image = pygame.image.load("images/missile.png").convert_alpha()
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.x = space_ship.x + space_ship.width // 2
@@ -101,6 +102,8 @@ class Meteor(object):
 
 class Explosion(object):
     def __init__(self):
+        self.x = 0
+        self.y = 0
         self.images = list()
         self.explode_count = 0
         self.explode_ = False
@@ -108,18 +111,21 @@ class Explosion(object):
         for i in ["01", "02", "03", "04"]:
             self.images.append(pygame.image.load(f"images/explosion{i}.png").convert_alpha())
 
-    def explode(self, x, y):
+        self.images.extend([self.images[-1] for _ in range(2)])  # for longer explosion
+
+    def explode(self):
         if self.explode_:
-            if self.explode_count + 1 < 5 * len(self.images):
+            if self.explode_count + 1 < 3 * len(self.images):
                 self.explode_count += 1
             else:
                 self.explode_count = 0
                 self.explode_ = False
 
-            win.blit(self.images[self.explode_count // 5], (x, y))
+            win.blit(self.images[self.explode_count // 3], (self.x, self.y))
 
 
 space_ship = SpaceShip()
+explosion = Explosion()
 
 bullets = []
 bullet_count = 20
@@ -173,7 +179,7 @@ while running:
 
         # meteors
         for meteor in meteors:
-            if meteor.y > meteor.y - meteor.height:
+            if meteor.y < win_height + meteor.height:
                 meteor.move()
             else:
                 meteors.remove(meteor)
@@ -181,10 +187,30 @@ while running:
         if meteor_count == 80:
             meteor_count = -1
 
-        # collision
+        # collision for meteor and space ship
+        for meteor in meteors:
+            if meteor.y + meteor.height > space_ship.y:
+                if meteor.x + meteor.width > space_ship.x and meteor.x < space_ship.x + space_ship.width:
+                    space_ship.health -= 1
+                    explosion.explode_ = True
+                    explosion.x, explosion.y = meteor.x, meteor.y + meteor.height // 2
+                    meteors.remove(meteor)
+
+            explosion.explode()
+
+        # collision for meteor and missile
+        for meteor in meteors:
+            for bullet in bullets:
+                if meteor.y + meteor.height > bullet.y:
+                    if meteor.x + meteor.width > bullet.x and meteor.x < bullet.x + bullet.width:
+                        explosion.explode_ = True
+                        explosion.x, explosion.y = meteor.x, meteor.y + meteor.height // 2
+                        meteors.remove(meteor)
+                        bullets.remove(bullet)
 
         pygame.display.update()
         clock.tick(FPS)
+
 
 pygame.quit()
 quit()

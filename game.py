@@ -1,4 +1,4 @@
-#  tutorial 4 - explosion + collision
+#  tutorial 5 - score + text
 
 import pygame
 import random

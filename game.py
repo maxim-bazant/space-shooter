@@ -101,13 +101,22 @@ class Meteor(object):
 
 class Explosion(object):
     def __init__(self):
-        images = list()
+        self.images = list()
+        self.explode_count = 0
+        self.explode_ = False
 
         for i in ["01", "02", "03", "04"]:
-            images.append(pygame.image.load(f"images/explosion{i}.png").convert_alpha())
+            self.images.append(pygame.image.load(f"images/explosion{i}.png").convert_alpha())
 
-    def show_explosion(self):
-        pass
+    def explode(self, x, y):
+        if self.explode_:
+            if self.explode_count + 1 < 5 * len(self.images):
+                self.explode_count += 1
+            else:
+                self.explode_count = 0
+                self.explode_ = False
+
+            win.blit(self.images[self.explode_count // 5], (x, y))
 
 
 space_ship = SpaceShip()

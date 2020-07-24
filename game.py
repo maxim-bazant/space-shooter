@@ -89,7 +89,7 @@ class Meteor(object):
         self.image = pygame.image.load("images/meteor.png").convert_alpha()
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        self.x = random.randint(self.width, win_width - self.width)
+        self.x = random.randint(50 + self.width, win_width - self.width - 50)  # 50 are to keep meteor from edges
         self.y = 0 - self.height
         self.hit_box = (self.x, self.y, self.width, self.height)
         self.vel = 7

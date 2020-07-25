@@ -208,6 +208,8 @@ while running:
                         meteors.remove(meteor)
                         bullets.remove(bullet)
 
+                explosion.explode()
+
         pygame.display.update()
         clock.tick(FPS)
 

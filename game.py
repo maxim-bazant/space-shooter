@@ -29,7 +29,6 @@ class SpaceShip(object):
         self.left = False
         self.vel = 8
         self.health = 10
-        self.hit_box = (self.x, self.y, self.width, self.height)
 
     def rotate(self, right: bool, left: bool):
         if right and self.rotation_angle > -3:
@@ -76,7 +75,6 @@ class Missile(object):
         self.x = space_ship.x + space_ship.width // 2
         self.y = space_ship.y
         self.vel = 5
-        self.hit_box = (self.x, self.y, self.width, self.height)
 
     def move(self):
         win.blit(self.image, (self.x, self.y))
@@ -91,7 +89,6 @@ class Meteor(object):
         self.height = self.image.get_height()
         self.x = random.randint(50 + self.width, win_width - self.width - 50)  # 50 are to keep meteor from edges
         self.y = 0 - self.height
-        self.hit_box = (self.x, self.y, self.width, self.height)
         self.vel = 7
 
     def move(self):

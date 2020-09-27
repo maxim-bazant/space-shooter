@@ -1,10 +1,15 @@
-#  tutorial 5 - text
+#  tutorial 5 - score text + game over and start game buttons
 
 import pygame
 import random
 import time
 
 pygame.init()
+pygame.font.init()
+
+
+font_size = 60
+my_font = pygame.font.SysFont("Comic Sans", font_size)
 
 win_width, win_height = 1200, 900
 win = pygame.display.set_mode((win_width, win_height))
@@ -15,6 +20,8 @@ running = True
 clock = pygame.time.Clock()
 
 FPS = 60
+
+score = 0
 
 
 class SpaceShip(object):
@@ -139,7 +146,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    if space_ship.health != 0:
+    if space_ship.health != 0 or score > -5:
         meteor_count += 1
 
         keys = pygame.key.get_pressed()
@@ -201,6 +208,7 @@ while running:
             for bullet in bullets:
                 if meteor.y + meteor.height > bullet.y:
                     if meteor.x + meteor.width > bullet.x and meteor.x < bullet.x + bullet.width:
+                        score += 1
                         explosions.append(Explosion(meteor.x, meteor.y + meteor.height // 2, True))
                         meteors.remove(meteor)
                         bullets.remove(bullet)
@@ -208,8 +216,14 @@ while running:
         for explosion in explosions:
             explosion.explode()
 
+        score_text = my_font.render(f"Your score: {score}", False, (255, 255, 255))
+        win.blit(score_text, (20, 20))
+
         pygame.display.update()
         clock.tick(FPS)
+
+    else:
+        pass  # show text game over
 
 
 pygame.quit()

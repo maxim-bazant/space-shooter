@@ -1,4 +1,4 @@
-#  tutorial 5 - pixel perfect collision
+#  tutorial 5 - text
 
 import pygame
 import random

@@ -1,4 +1,4 @@
-#  tutorial 5 - score + text + new space ship
+#  tutorial 4 - explosion
 
 import pygame
 import random

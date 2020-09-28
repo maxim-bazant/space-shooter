@@ -2,6 +2,7 @@
 
 import pygame
 import random
+import time
 
 pygame.init()
 pygame.font.init()
@@ -10,7 +11,7 @@ pygame.font.init()
 font_size = 60
 my_font = pygame.font.SysFont("Comic Sans", font_size)
 
-win_width, win_height = 1200, 900
+win_width, win_height = 1000, 1000
 win = pygame.display.set_mode((win_width, win_height))
 win_caption = pygame.display.set_caption("space shooter game")
 
@@ -29,7 +30,7 @@ class SpaceShip(object):
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.x = win_width // 2 - self.width
-        self.y = win_height - self.height - 50
+        self.y = win_height - self.height - 150
         self.rotation_angle = 0
         self.right = False
         self.left = False
@@ -65,7 +66,7 @@ class SpaceShip(object):
                     self.rotation_angle -= 1
 
             elif self.rotation_angle == 0:
-                self.y = win_height - self.height - 50
+                self.y = win_height - self.height - 150
 
             win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
 
@@ -128,6 +129,30 @@ class Explosion(object):
                 self.explode_ = False
 
             win.blit(self.images[self.explode_count // 3], (self.x, self.y))
+
+
+class Earth(object):
+    def __init__(self, shake: bool):
+        self.image = pygame.image.load("images/")
+        self.width = self.image.get_width
+        self.height = self.image.get_height
+        self.x = 0
+        self.y = win_height - self.height
+        self.shake_count = 0
+        self.shake = shake
+
+    def shake(self):
+        if self.shake:
+            if self.shake_count < 40:
+                if self.shake_count % 2 == 0:
+                    self.x += 5
+                else:
+                    self.x -= 5
+            else:
+                self.shake = False
+        else:
+            self.shake_count = 0
+            self.y = win_height - self.height
 
 
 space_ship = SpaceShip()
@@ -212,6 +237,14 @@ while running:
                         meteors.remove(meteor)
                         bullets.remove(bullet)
 
+        # collision with Earth
+        for meteor in meteors:
+            if meteor.y > win_height - meteor.height - 40:
+                meteors.remove(meteor)
+                explosions.append(Explosion(meteor.x, meteor.y + meteor.height // 2, True))
+                score -= 2
+                # shake Earth
+
         for explosion in explosions:
             explosion.explode()
 
@@ -223,6 +256,10 @@ while running:
 
     else:
         pass  # show text game over
+        time.sleep(1)
+        # show start button
+        # background will be moving spaceship will be shooting
+        # after pressing start button everything will restart and player will be in control
 
 
 pygame.quit()

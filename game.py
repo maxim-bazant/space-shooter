@@ -121,38 +121,29 @@ class Explosion(object):
         self.images.extend([self.images[-1] for _ in range(2)])  # for longer explosion
 
     def explode(self):
-        if self.explode_:
-            if self.explode_count + 1 < 3 * len(self.images):
-                self.explode_count += 1
-            else:
-                self.explode_count = 0
-                self.explode_ = False
+        if self.explode_count + 1 < 3 * len(self.images):
+            self.explode_count += 1
+        else:
+            self.explode_count = 0
 
-            win.blit(self.images[self.explode_count // 3], (self.x, self.y))
+        win.blit(self.images[self.explode_count // 3], (self.x, self.y))
 
 
 class Earth(object):
-    def __init__(self, shake: bool):
-        self.image = pygame.image.load("images/")
-        self.width = self.image.get_width
-        self.height = self.image.get_height
+    def __init__(self):
+        self.image = pygame.image.load("images/earth.png")
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
         self.x = 0
         self.y = win_height - self.height
         self.shake_count = 0
-        self.shake = shake
+        self.shake_ = False
 
     def shake(self):
-        if self.shake:
-            if self.shake_count < 40:
-                if self.shake_count % 2 == 0:
-                    self.x += 5
-                else:
-                    self.x -= 5
-            else:
-                self.shake = False
-        else:
-            self.shake_count = 0
-            self.y = win_height - self.height
+        pass
+
+    def show_me(self):
+        win.blit(self.image, (self.x, self.y))
 
 
 space_ship = SpaceShip()
@@ -165,12 +156,14 @@ bullet_count = 20
 meteors = []
 meteor_count = 0
 
+Earth = Earth()
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    if space_ship.health != 0 or score > -5:
+    if space_ship.health != 0 and score > -5:
         meteor_count += 1
 
         keys = pygame.key.get_pressed()
@@ -195,6 +188,8 @@ while running:
 
         space_ship.move()
         space_ship.health_bar()
+
+        Earth.show_me()
 
         # bullets
         for bullet in bullets:
@@ -243,7 +238,7 @@ while running:
                 meteors.remove(meteor)
                 explosions.append(Explosion(meteor.x, meteor.y + meteor.height // 2, True))
                 score -= 2
-                # shake Earth
+                # shake earth
 
         for explosion in explosions:
             explosion.explode()

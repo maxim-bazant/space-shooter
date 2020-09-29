@@ -121,12 +121,14 @@ class Explosion(object):
         self.images.extend([self.images[-1] for _ in range(2)])  # for longer explosion
 
     def explode(self):
-        if self.explode_count + 1 < 3 * len(self.images):
-            self.explode_count += 1
-        else:
-            self.explode_count = 0
+        if self.explode_:
+            if self.explode_count + 1 < 3 * len(self.images):
+                self.explode_count += 1
+            else:
+                self.explode_count = 0
+                self.explode_ = False
 
-        win.blit(self.images[self.explode_count // 3], (self.x, self.y))
+            win.blit(self.images[self.explode_count // 3], (self.x, self.y))
 
 
 class Earth(object):
@@ -134,13 +136,18 @@ class Earth(object):
         self.image = pygame.image.load("images/earth.png")
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        self.x = 0
-        self.y = win_height - self.height
+        self.x = 0 - (self.width - win_width) // 2
+        self.y = (win_height - self.height) + self.height // 7
         self.shake_count = 0
         self.shake_ = False
 
     def shake(self):
-        pass
+        if self.shake_:
+            if self.shake_count < 40:
+                pass  # shake technique
+            else:
+                self.shake_count = 0
+                self.shake_ = False
 
     def show_me(self):
         win.blit(self.image, (self.x, self.y))
@@ -190,6 +197,7 @@ while running:
         space_ship.health_bar()
 
         Earth.show_me()
+        Earth.shake()
 
         # bullets
         for bullet in bullets:
@@ -238,10 +246,13 @@ while running:
                 meteors.remove(meteor)
                 explosions.append(Explosion(meteor.x, meteor.y + meteor.height // 2, True))
                 score -= 2
-                # shake earth
+                Earth.shake_ = True
 
         for explosion in explosions:
             explosion.explode()
+
+            if not explosion.explode_:
+                explosions.remove(explosion)
 
         score_text = my_font.render(f"Your score: {score}", False, (255, 255, 255))
         win.blit(score_text, (20, 20))

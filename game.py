@@ -1,4 +1,4 @@
-#  tutorial 5 - score text + game over and start game buttons
+#  tutorial 5 - score text + game over and start game buttons + new features like Earth
 
 import pygame
 import random

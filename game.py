@@ -143,8 +143,15 @@ class Earth(object):
 
     def shake(self):
         if self.shake_:
-            if self.shake_count < 40:
-                pass  # shake technique
+            if self.shake_count < 6:
+                if self.shake_count % 2 == 0:
+                    self.x -= 7.5
+                    self.y -= 7.5
+                elif self.shake_count % 2 == 1:
+                    self.x += 7.5
+                    self.y += 7.5
+
+                self.shake_count += 1
             else:
                 self.shake_count = 0
                 self.shake_ = False

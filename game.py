@@ -23,6 +23,8 @@ FPS = 60
 
 score = 0
 
+start_new_game = False
+
 
 class SpaceShip(object):
     def __init__(self):
@@ -177,7 +179,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    if space_ship.health != 0 and score > -5:
+    if space_ship.health != 0 and score > -5 and not start_new_game:
         meteor_count += 1
 
         keys = pygame.key.get_pressed()

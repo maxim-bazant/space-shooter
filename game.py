@@ -1,4 +1,4 @@
-#  tutorial 5 - score text + game over and start game buttons + new features like Earth
+#  tutorial 5 - score text +  new features like Earth + score achievement
 
 import pygame
 import random
@@ -82,7 +82,7 @@ class Missile(object):
         self.height = self.image.get_height()
         self.x = space_ship.x + space_ship.width // 2
         self.y = space_ship.y
-        self.vel = 5
+        self.vel = 8
         self.hit_box = (self.x, self.y, self.width, self.height)
 
     def move(self):
@@ -228,6 +228,12 @@ while running:
 
         if meteor_count == 80:
             meteor_count = -1
+
+        if score == 5:
+            FPS = 65
+
+        if score == 15:
+            FPS = 75
 
         # collision for meteor and space ship
         for meteor in meteors:

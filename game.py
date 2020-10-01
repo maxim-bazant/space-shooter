@@ -23,7 +23,7 @@ FPS = 60
 
 score = 0
 
-start_new_game = False
+lost_start_new_game = False
 
 
 class SpaceShip(object):
@@ -32,7 +32,8 @@ class SpaceShip(object):
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.x = win_width // 2 - self.width
-        self.y = win_height - self.height - 150
+        self.space_between_the_Earth = 250  # 200 is so there is space between the Earth and the space ship
+        self.y = win_height - self.height - self.space_between_the_Earth
         self.rotation_angle = 0
         self.right = False
         self.left = False
@@ -68,7 +69,7 @@ class SpaceShip(object):
                     self.rotation_angle -= 1
 
             elif self.rotation_angle == 0:
-                self.y = win_height - self.height - 150
+                self.y = win_height - self.height - self.space_between_the_Earth
 
             win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
 
@@ -135,7 +136,7 @@ class Explosion(object):
 
 class Earth(object):
     def __init__(self):
-        self.image = pygame.image.load("images/earth.png")
+        self.image = pygame.image.load("images/earth.png").convert_alpha()
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.x = 0 - (self.width - win_width) // 2
@@ -174,12 +175,24 @@ meteor_count = 0
 
 Earth = Earth()
 
+game_over_button = pygame.image.load("button/game_over_button.png").convert_alpha()
+
+
+def blit_some_things():
+    win.fill((5, 0, 30))  # space color
+
+    space_ship.move()
+    space_ship.health_bar()
+
+    Earth.show_me()
+
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    if space_ship.health != 0 and score > -5 and not start_new_game:
+    if space_ship.health != 0 and score > -5 and not lost_start_new_game:
         meteor_count += 1
 
         keys = pygame.key.get_pressed()
@@ -275,12 +288,24 @@ while running:
         pygame.display.update()
         clock.tick(FPS)
 
-    else:
-        pass  # show text game over
+    elif space_ship.health == 0 or score < -5 or lost_start_new_game:
+        print("yep")
+        lost_start_new_game = True
+        space_ship.health = 0
+        space_ship.health = 10
+        meteors = []
+        bullets = []
+        FPS = 60
+        space_ship.x = win_width // 2 - space_ship.width
+        blit_some_things()
+        win.blit(game_over_button, (win_width // 2 - 195, win_height // 2 - 150))
         time.sleep(1)
-        # show start button
-        # background will be moving spaceship will be shooting
-        # after pressing start button everything will restart and player will be in control
+        pygame.display.update()
+        clock.tick(FPS)
+        while True:
+            pass
+            # show start button
+            # after pressing start button everything will restart and player will be in control
 
 
 pygame.quit()

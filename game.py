@@ -291,8 +291,8 @@ while running:
     elif space_ship.health == 0 or score < -5 or lost_start_new_game:
         print("yep")
         lost_start_new_game = True
-        space_ship.health = 0
         space_ship.health = 10
+        score = 0
         meteors = []
         bullets = []
         FPS = 60

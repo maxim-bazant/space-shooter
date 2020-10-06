@@ -192,7 +192,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    if space_ship.health != 0 and score > -5 and not lost_start_new_game:
+    if not lost_start_new_game:
         meteor_count += 1
 
         keys = pygame.key.get_pressed()
@@ -288,15 +288,19 @@ while running:
         pygame.display.update()
         clock.tick(FPS)
 
-    elif space_ship.health == 0 or score < -5 or lost_start_new_game:
+        if space_ship.health == 0 or score < -5:
+            lost_start_new_game = True
+
+    elif lost_start_new_game:
         print("yep")
         lost_start_new_game = True
         space_ship.health = 10
+        space_ship.rotation_angle = 0
+        space_ship.x = win_width // 2 - space_ship.width
         score = 0
         meteors = []
         bullets = []
         FPS = 60
-        space_ship.x = win_width // 2 - space_ship.width
         blit_some_things()
         win.blit(game_over_button, (win_width // 2 - 195, win_height // 2 - 150))
         time.sleep(1)

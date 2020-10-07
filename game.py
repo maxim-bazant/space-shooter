@@ -31,7 +31,7 @@ class SpaceShip(object):
         self.image = pygame.image.load("images/space_ship.png").convert_alpha()
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        self.x = win_width // 2 - self.width
+        self.x = win_width // 2 - self.width + 70  # 70 is for the space ship to be perfectly in middle
         self.space_between_the_Earth = 250  # 200 is so there is space between the Earth and the space ship
         self.y = win_height - self.height - self.space_between_the_Earth
         self.rotation_angle = 0
@@ -177,6 +177,13 @@ Earth = Earth()
 
 game_over_button = pygame.image.load("button/game_over_button.png").convert_alpha()
 
+start_button = pygame.image.load("button/start_button.png").convert_alpha()
+
+start_button_brighter = pygame.image.load("button/start_button_brighter.png").convert_alpha()
+
+start_button_x = win_width // 2 - 230
+start_button_y = win_height // 2 - 80
+
 
 def blit_some_things():
     win.fill((5, 0, 30))  # space color
@@ -292,23 +299,27 @@ while running:
             lost_start_new_game = True
 
     elif lost_start_new_game:
-        print("yep")
         lost_start_new_game = True
         space_ship.health = 10
         space_ship.rotation_angle = 0
-        space_ship.x = win_width // 2 - space_ship.width
+        space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle
         score = 0
         meteors = []
         bullets = []
         FPS = 60
         blit_some_things()
-        win.blit(game_over_button, (win_width // 2 - 195, win_height // 2 - 150))
+        win.blit(game_over_button, (win_width // 2 - 180, win_height // 2 - 200))
         time.sleep(1)
         pygame.display.update()
         clock.tick(FPS)
-        while True:
-            pass
-            # show start button
+        win.fill((5, 0, 30))  # space color
+        while lost_start_new_game:
+            Earth.show_me()
+            space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle
+            win.blit(start_button, (start_button_x, start_button_y))
+            time.sleep(1)
+            pygame.display.update()
+            clock.tick(FPS)
             # after pressing start button everything will restart and player will be in control
 
 

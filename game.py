@@ -24,6 +24,7 @@ FPS = 60
 score = 0
 
 lost_start_new_game = False
+start_new_game = False
 
 
 class SpaceShip(object):
@@ -163,6 +164,30 @@ class Earth(object):
         win.blit(self.image, (self.x, self.y))
 
 
+class Button(object):
+    def __init__(self, x, y, image):
+        self.x = x
+        self.y = y
+        self.image = image
+        self.interaction_image = pygame.image.load("button/start_button_brighter.png").convert_alpha()
+        self.width = image.get_rect().width
+        self.height = image.get_rect().height
+
+    def show_me(self):
+        win.blit(self.image, (self.x, self.y))
+
+    def is_clicked(self):
+        if (self.x < int(pygame.mouse.get_pos()[0]) < self.x + self.width
+                and self.y < int(pygame.mouse.get_pos()[1]) < self.y + self.height):
+            start_button_brighter.show_me()
+
+            if pygame.mouse.get_pressed()[0]:
+                return True
+
+        else:
+            start_button.show_me()
+
+
 space_ship = SpaceShip()
 
 explosions = []
@@ -175,14 +200,14 @@ meteor_count = 0
 
 Earth = Earth()
 
-game_over_button = pygame.image.load("button/game_over_button.png").convert_alpha()
+game_over_button = Button(win_width // 2 - 180, win_height // 2 - 200,
+                          pygame.image.load("button/game_over_button.png").convert_alpha())
 
-start_button = pygame.image.load("button/start_button.png").convert_alpha()
+start_button = Button(win_width // 2 - 230, win_height // 2 - 80,
+                      pygame.image.load("button/start_button.png").convert_alpha())
 
-start_button_brighter = pygame.image.load("button/start_button_brighter.png").convert_alpha()
-
-start_button_x = win_width // 2 - 230
-start_button_y = win_height // 2 - 80
+start_button_brighter = Button(win_width // 2 - 230, win_height // 2 - 80,
+                               pygame.image.load("button/start_button_brighter.png").convert_alpha())
 
 
 def blit_some_things():
@@ -199,7 +224,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    if not lost_start_new_game:
+    if not (lost_start_new_game or start_new_game):
         meteor_count += 1
 
         keys = pygame.key.get_pressed()
@@ -299,28 +324,33 @@ while running:
             lost_start_new_game = True
 
     elif lost_start_new_game:
-        lost_start_new_game = True
         space_ship.health = 10
         space_ship.rotation_angle = 0
         space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle
-        score = 0
         meteors = []
         bullets = []
+        explosions = []
         FPS = 60
         blit_some_things()
-        win.blit(game_over_button, (win_width // 2 - 180, win_height // 2 - 200))
-        time.sleep(1)
+        game_over_button.show_me()
         pygame.display.update()
         clock.tick(FPS)
+        time.sleep(2)
         win.fill((5, 0, 30))  # space color
-        while lost_start_new_game:
+        lost_start_new_game = False
+        start_new_game = True
+        Earth.shake_count = 0
+    elif start_new_game:
+        if not start_button.is_clicked():
             Earth.show_me()
-            space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle
-            win.blit(start_button, (start_button_x, start_button_y))
-            time.sleep(1)
             pygame.display.update()
             clock.tick(FPS)
-            # after pressing start button everything will restart and player will be in control
+        else:
+            start_new_game = False
+            space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle
+            score = 0
+            pygame.display.update()
+            clock.tick(FPS)
 
 
 pygame.quit()

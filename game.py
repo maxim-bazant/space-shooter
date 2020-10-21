@@ -24,7 +24,7 @@ FPS = 60
 score = 0
 
 lost_start_new_game = False
-start_new_game = False
+start_new_game = True
 
 
 class SpaceShip(object):
@@ -203,10 +203,10 @@ Earth = Earth()
 game_over_button = Button(win_width // 2 - 180, win_height // 2 - 200,
                           pygame.image.load("button/game_over_button.png").convert_alpha())
 
-start_button = Button(win_width // 2 - 230, win_height // 2 - 80,
+start_button = Button(win_width // 2 - 230, win_height // 2 - 120,
                       pygame.image.load("button/start_button.png").convert_alpha())
 
-start_button_brighter = Button(win_width // 2 - 230, win_height // 2 - 80,
+start_button_brighter = Button(win_width // 2 - 230, win_height // 2 - 120,
                                pygame.image.load("button/start_button_brighter.png").convert_alpha())
 
 
@@ -324,6 +324,7 @@ while running:
             lost_start_new_game = True
 
     elif lost_start_new_game:
+        time.sleep(1)
         space_ship.health = 10
         space_ship.rotation_angle = 0
         space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle
@@ -340,9 +341,11 @@ while running:
         lost_start_new_game = False
         start_new_game = True
         Earth.shake_count = 0
+        Earth.shake_ = False
     elif start_new_game:
         if not start_button.is_clicked():
             Earth.show_me()
+            win.blit(space_ship.image, (space_ship.x, space_ship.y))
             pygame.display.update()
             clock.tick(FPS)
         else:

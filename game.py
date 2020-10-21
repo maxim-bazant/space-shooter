@@ -1,4 +1,4 @@
-#  tutorial 6 - start and game over button
+#  tutorial 7 - music + sound effects + music pause button
 
 import pygame
 import random
@@ -6,6 +6,7 @@ import time
 
 pygame.init()
 pygame.font.init()
+pygame.mixer.pre_init(44100, 16, 2, 4096)
 
 
 font_size = 60

@@ -27,6 +27,12 @@ score = 0
 lost_start_new_game = False
 start_new_game = True
 
+# sounds
+explosion_sound = pygame.mixer.Sound("music/explosion.wav")
+explosion_sound.set_volume(0.2)
+laser_shoot = pygame.mixer.Sound("music/laser_shoot.wav")
+laser_shoot.set_volume(0.1)
+
 
 class SpaceShip(object):
     def __init__(self):
@@ -192,6 +198,7 @@ class Button(object):
 space_ship = SpaceShip()
 
 explosions = []
+explosions_sound = []
 
 bullets = []
 bullet_count = 20
@@ -243,6 +250,7 @@ while running:
             space_ship.left = False
 
         if keys[pygame.K_SPACE] and bullet_count == 20:
+            laser_shoot.play()
             bullets.append(Missile())
             bullet_count = 0
 
@@ -289,6 +297,7 @@ while running:
                 if meteor.x + meteor.width > space_ship.x and meteor.x < space_ship.x + space_ship.width:
                     space_ship.health -= 1
                     explosions.append(Explosion(meteor.x, meteor.y + meteor.height // 2, True))
+                    explosions_sound.append(explosion_sound)
                     meteors.remove(meteor)
 
         # collision for meteor and missile
@@ -298,6 +307,7 @@ while running:
                     if meteor.x + meteor.width > bullet.x and meteor.x < bullet.x + bullet.width:
                         score += 1
                         explosions.append(Explosion(meteor.x, meteor.y + meteor.height // 2, True))
+                        explosions_sound.append(explosion_sound)
                         meteors.remove(meteor)
                         bullets.remove(bullet)
 
@@ -306,6 +316,7 @@ while running:
             if meteor.y > win_height - meteor.height - 40:
                 meteors.remove(meteor)
                 explosions.append(Explosion(meteor.x, meteor.y + meteor.height // 2, True))
+                explosions_sound.append(explosion_sound)
                 score -= 2
                 Earth.shake_ = True
 
@@ -314,6 +325,10 @@ while running:
 
             if not explosion.explode_:
                 explosions.remove(explosion)
+
+        for explosion_sound_ in explosions_sound:
+            explosion_sound.play()
+            explosions_sound.remove(explosion_sound_)
 
         score_text = my_font.render(f"Your score: {score}", False, (255, 255, 255))
         win.blit(score_text, (20, 20))
@@ -338,12 +353,12 @@ while running:
         pygame.display.update()
         clock.tick(FPS)
         time.sleep(2)
-        win.fill((5, 0, 30))  # space color
         lost_start_new_game = False
         start_new_game = True
         Earth.shake_count = 0
         Earth.shake_ = False
     elif start_new_game:
+        win.fill((5, 0, 30))  # space color
         if not start_button.is_clicked():
             Earth.show_me()
             win.blit(space_ship.image, (space_ship.x, space_ship.y))

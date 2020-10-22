@@ -29,9 +29,9 @@ start_new_game = True
 
 # sounds
 explosion_sound = pygame.mixer.Sound("music/explosion.wav")
-explosion_sound.set_volume(0.2)
+explosion_sound.set_volume(0.3)
 laser_shoot = pygame.mixer.Sound("music/laser_shoot.wav")
-laser_shoot.set_volume(0.1)
+laser_shoot.set_volume(0.2)
 
 
 class SpaceShip(object):
@@ -110,7 +110,7 @@ class Meteor(object):
         self.x = random.randint(50 + self.width, win_width - self.width - 50)  # 50 are to keep meteor from edges
         self.y = 0 - self.height
         self.hit_box = (self.x, self.y, self.width, self.height)
-        self.vel = 7
+        self.vel = 9
 
     def move(self):
         win.blit(self.image, (self.x, self.y))
@@ -357,6 +357,7 @@ while running:
         start_new_game = True
         Earth.shake_count = 0
         Earth.shake_ = False
+
     elif start_new_game:
         win.fill((5, 0, 30))  # space color
         if not start_button.is_clicked():

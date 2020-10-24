@@ -28,7 +28,9 @@ lost_start_new_game = False
 start_new_game = True
 
 # sounds
-explosion_sound = pygame.mixer.Sound("music/explosion.wav")
+explosion_sound = pygame.mixer.Sound("music/explosion1.wav")
+space_ship_explosion_sound = pygame.mixer.Sound("music/explosion.wav")
+space_ship_explosion_sound.set_volume(0.5)
 explosion_sound.set_volume(0.3)
 laser_shoot = pygame.mixer.Sound("music/laser_shoot.wav")
 laser_shoot.set_volume(0.2)
@@ -349,6 +351,7 @@ while running:
         explosion_x = space_ship.x
         explosion_y = space_ship.y
         explosion_of_space_ship = Explosion(explosion_x, explosion_y, True, True)
+        space_ship_explosion_sound.play()
 
         meteors = []
         bullets = []

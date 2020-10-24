@@ -119,15 +119,21 @@ class Meteor(object):
 
 
 class Explosion(object):
-    def __init__(self, x, y, explode_):
+    def __init__(self, x, y, explode_, zoom=False):
         self.x = x
         self.y = y
         self.images = list()
         self.explode_count = 0
         self.explode_ = explode_
+        self.zoom = zoom
 
-        for i in ["01", "02", "03", "04"]:
-            self.images.append(pygame.image.load(f"images/explosion{i}.png").convert_alpha())
+        if not zoom:
+            for i in ["01", "02", "03", "04"]:
+                self.images.append(pygame.image.load(f"images/explosion{i}.png").convert_alpha())
+        else:
+            for i in ["01", "02", "03", "04"]:
+                self.images.append(pygame.transform.scale2x(
+                     pygame.image.load(f"images/explosion{i}.png").convert_alpha()))
 
         self.images.extend([self.images[-1] for _ in range(2)])  # for longer explosion
 
@@ -339,9 +345,33 @@ while running:
         if space_ship.health == 0 or score < -5:
             lost_start_new_game = True
 
-    elif lost_start_new_game:
-        time.sleep(1)
+    elif space_ship.health == 0:
+        explosion_x = space_ship.x
+        explosion_y = space_ship.y
+        explosion_of_space_ship = Explosion(explosion_x, explosion_y, True, True)
+
+        meteors = []
+        bullets = []
+        explosions = []
+        win.fill((5, 0, 30))  # space color
+        space_ship.move()
+        Earth.show_me()
+        score_text = my_font.render(f"Your score was: {score}", False, (255, 255, 255))
+        win.blit(score_text, (20, 20))
+
+        pygame.display.update()
+        clock.tick(FPS)
+
+        while explosion_of_space_ship.explode_:
+            explosion_of_space_ship.explode()
+            pygame.display.update()
+            clock.tick(FPS)
+
+        lost_start_new_game = True
         space_ship.health = 10
+
+    elif lost_start_new_game and not space_ship.health == 0:
+        time.sleep(1)
         space_ship.rotation_angle = 0
         space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle
         meteors = []

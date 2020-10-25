@@ -30,7 +30,7 @@ start_new_game = True
 # sounds
 explosion_sound = pygame.mixer.Sound("music/explosion1.wav")
 space_ship_explosion_sound = pygame.mixer.Sound("music/explosion.wav")
-space_ship_explosion_sound.set_volume(0.5)
+space_ship_explosion_sound.set_volume(1)
 explosion_sound.set_volume(0.3)
 laser_shoot = pygame.mixer.Sound("music/laser_shoot.wav")
 laser_shoot.set_volume(0.2)

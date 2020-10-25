@@ -357,7 +357,6 @@ while running:
         bullets = []
         explosions = []
         win.fill((5, 0, 30))  # space color
-        space_ship.move()
         Earth.show_me()
         score_text = my_font.render(f"Your score was: {score}", False, (255, 255, 255))
         win.blit(score_text, (20, 20))

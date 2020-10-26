@@ -26,6 +26,7 @@ score = 0
 
 lost_start_new_game = False
 start_new_game = True
+all_explosions_done = False
 
 # sounds
 explosion_sound = pygame.mixer.Sound("music/explosion1.wav")
@@ -60,18 +61,21 @@ class SpaceShip(object):
         elif left and self.rotation_angle < 3:
             self.rotation_angle += 1
 
+    def show_me(self):
+        win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
+
     def move(self):
         if self.right:
             if self.x < win_width - self.width - 20:  # the ten is just that the space ship does not touch the edge
                 self.x += self.vel
                 self.rotate(True, False)
-            win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
+            self.show_me()
 
         elif self.left:
             if self.x > 10:  # the ten is just that the space ship does not touch the edge, it is just fo looks
                 self.x -= self.vel
                 self.rotate(False, True)
-            win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
+            self.show_me()
 
         else:
             if self.rotation_angle != 0:
@@ -83,7 +87,7 @@ class SpaceShip(object):
             elif self.rotation_angle == 0:
                 self.y = win_height - self.height - self.space_between_the_Earth
 
-            win.blit(pygame.transform.rotate(self.image, self.rotation_angle), (self.x, self.y))
+            self.show_me()
 
     def health_bar(self):
         pygame.draw.rect(win, (255, 0, 0), (self.x, self.y + self.height + 20, self.width, 10))
@@ -120,8 +124,11 @@ class Meteor(object):
         self.hit_box = (self.x, self.y, self.width, self.height)
         self.vel = 9
 
-    def move(self):
+    def show_me(self):
         win.blit(self.image, (self.x, self.y))
+
+    def move(self):
+        self.show_me()
 
         self.y += self.vel
 
@@ -381,6 +388,22 @@ while running:
         space_ship.health = 10
 
     elif lost_start_new_game and not space_ship.health == 0:
+        while not all_explosions_done:
+            win.fill((5, 0, 30))
+            Earth.show_me()
+            space_ship.show_me()
+            space_ship.health_bar()
+            meteors[0].show_me()
+            score_text = my_font.render(f"Your score was: {score}", False, (255, 255, 255))
+            win.blit(score_text, (20, 20))
+            for explosion in explosions:
+                explosion.explode()
+
+                if not explosion.explode_:
+                    all_explosions_done = True
+                pygame.display.update()
+                clock.tick(60)
+
         time.sleep(1)
         space_ship.rotation_angle = 0
         space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle

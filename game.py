@@ -1,4 +1,4 @@
-#  tutorial 7 - music + sound effects + music pause button
+#  tutorial 7 - sound effects + pixel perfect collision
 
 import pygame
 import random
@@ -39,6 +39,8 @@ laser_shoot.set_volume(0.2)
 class SpaceShip(object):
     def __init__(self):
         self.image = pygame.image.load("images/space_ship.png").convert_alpha()
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect()
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.x = win_width // 2 - self.width + 70  # 70 is for the space ship to be perfectly in middle
@@ -91,6 +93,8 @@ class SpaceShip(object):
 class Missile(object):
     def __init__(self):
         self.image = pygame.image.load("images/missile.png").convert_alpha()
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect()
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.x = space_ship.x + space_ship.width // 2
@@ -107,6 +111,8 @@ class Missile(object):
 class Meteor(object):
     def __init__(self):
         self.image = pygame.image.load("images/meteor.png").convert_alpha()
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect()
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.x = random.randint(50 + self.width, win_width - self.width - 50)  # 50 are to keep meteor from edges
@@ -185,8 +191,8 @@ class Button(object):
         self.y = y
         self.image = image
         self.interaction_image = pygame.image.load("button/start_button_brighter.png").convert_alpha()
-        self.width = image.get_rect().width
-        self.height = image.get_rect().height
+        self.width = image.get_width()
+        self.height = image.get_height()
 
     def show_me(self):
         win.blit(self.image, (self.x, self.y))
@@ -299,25 +305,27 @@ while running:
         if score == 15:
             FPS = 75
 
-        # collision for meteor and space ship
+        # collision for meteor and spaceship
         for meteor in meteors:
-            if meteor.y + meteor.height > space_ship.y:
-                if meteor.x + meteor.width > space_ship.x and meteor.x < space_ship.x + space_ship.width:
-                    space_ship.health -= 1
-                    explosions.append(Explosion(meteor.x, meteor.y + meteor.height // 2, True))
-                    explosions_sound.append(explosion_sound)
-                    meteors.remove(meteor)
+            offset = (space_ship.x - meteor.x, space_ship.y - meteor.y)
+            collision = meteor.mask.overlap(space_ship.mask, offset)
+            if collision:
+                space_ship.health -= 1
+                explosions.append(Explosion(meteor.x, meteor.y + meteor.height // 2, True))
+                explosions_sound.append(explosion_sound)
+                meteors.remove(meteor)
 
         # collision for meteor and missile
         for meteor in meteors:
             for bullet in bullets:
-                if meteor.y + meteor.height > bullet.y:
-                    if meteor.x + meteor.width > bullet.x and meteor.x < bullet.x + bullet.width:
-                        score += 1
-                        explosions.append(Explosion(meteor.x, meteor.y + meteor.height // 2, True))
-                        explosions_sound.append(explosion_sound)
-                        meteors.remove(meteor)
-                        bullets.remove(bullet)
+                offset = (bullet.x - meteor.x, bullet.y - meteor.y)
+                collision = meteor.mask.overlap(bullet.mask, offset)
+                if collision:
+                    score += 1
+                    explosions.append(Explosion(meteor.x, meteor.y + meteor.height // 2, True))
+                    explosions_sound.append(explosion_sound)
+                    meteors.remove(meteor)
+                    bullets.remove(bullet)
 
         # collision with Earth
         for meteor in meteors:

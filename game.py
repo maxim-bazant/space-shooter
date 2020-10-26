@@ -27,6 +27,7 @@ score = 0
 lost_start_new_game = False
 start_new_game = True
 all_explosions_done = False
+space_ship_explosion = False
 
 # sounds
 explosion_sound = pygame.mixer.Sound("music/explosion1.wav")
@@ -381,6 +382,7 @@ while running:
 
         while explosion_of_space_ship.explode_:
             explosion_of_space_ship.explode()
+            space_ship_explosion = True
             pygame.display.update()
             clock.tick(FPS)
 
@@ -388,23 +390,26 @@ while running:
         space_ship.health = 10
 
     elif lost_start_new_game and not space_ship.health == 0:
-        while not all_explosions_done:
-            win.fill((5, 0, 30))
-            Earth.show_me()
-            space_ship.show_me()
-            space_ship.health_bar()
-            meteors[0].show_me()
-            score_text = my_font.render(f"Your score was: {score}", False, (255, 255, 255))
-            win.blit(score_text, (20, 20))
-            for explosion in explosions:
-                explosion.explode()
+        if not space_ship_explosion:
+            while not all_explosions_done:
+                win.fill((5, 0, 30))
+                Earth.show_me()
+                space_ship.show_me()
+                space_ship.health_bar()
+                try:
+                    meteors[0].show_me()
+                except IndexError:
+                    pass
+                score_text = my_font.render(f"Your score was: {score}", False, (255, 255, 255))
+                win.blit(score_text, (20, 20))
+                for explosion in explosions:
+                    explosion.explode()
 
-                if not explosion.explode_:
-                    all_explosions_done = True
-                pygame.display.update()
-                clock.tick(60)
+                    if not explosion.explode_:
+                        all_explosions_done = True
+                    pygame.display.update()
+                    clock.tick(60)
 
-        time.sleep(1)
         space_ship.rotation_angle = 0
         space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle
         meteors = []
@@ -420,6 +425,7 @@ while running:
         start_new_game = True
         Earth.shake_count = 0
         Earth.shake_ = False
+        time.sleep(1)
 
     elif start_new_game:
         win.fill((5, 0, 30))  # space color
@@ -430,6 +436,7 @@ while running:
             clock.tick(FPS)
         else:
             start_new_game = False
+            space_ship_explosion = False
             space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle
             score = 0
             pygame.display.update()

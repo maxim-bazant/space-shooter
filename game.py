@@ -410,6 +410,7 @@ while running:
                     pygame.display.update()
                     clock.tick(60)
 
+        time.sleep(1.5)
         space_ship.rotation_angle = 0
         space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle
         meteors = []
@@ -425,7 +426,6 @@ while running:
         start_new_game = True
         Earth.shake_count = 0
         Earth.shake_ = False
-        time.sleep(1)
 
     elif start_new_game:
         win.fill((5, 0, 30))  # space color

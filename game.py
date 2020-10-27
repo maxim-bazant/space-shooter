@@ -441,7 +441,6 @@ while running:
                     pygame.display.update()
                     clock.tick(60)
 
-        time.sleep(1.5)
         space_ship.rotation_angle = 0
         space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle
         meteors = []

@@ -32,10 +32,14 @@ space_ship_explosion = False
 # sounds
 explosion_sound = pygame.mixer.Sound("music/explosion1.wav")
 space_ship_explosion_sound = pygame.mixer.Sound("music/explosion.wav")
-space_ship_explosion_sound.set_volume(1)
+space_ship_explosion_sound.set_volume(0.9)
 explosion_sound.set_volume(0.3)
 laser_shoot = pygame.mixer.Sound("music/laser_shoot.wav")
 laser_shoot.set_volume(0.2)
+
+bg_music = pygame.mixer.music.load("music/main_music.mp3")
+pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.play(-1)  # -1 means that it will play the music infinitely
 
 
 class SpaceShip(object):
@@ -194,10 +198,11 @@ class Earth(object):
 
 
 class Button(object):
-    def __init__(self, x, y, image):
+    def __init__(self, x, y, image, interaction=False):
         self.x = x
         self.y = y
         self.image = image
+        self.interaction = interaction
         self.interaction_image = pygame.image.load("button/start_button_brighter.png").convert_alpha()
         self.width = image.get_width()
         self.height = image.get_height()
@@ -208,13 +213,16 @@ class Button(object):
     def is_clicked(self):
         if (self.x < int(pygame.mouse.get_pos()[0]) < self.x + self.width
                 and self.y < int(pygame.mouse.get_pos()[1]) < self.y + self.height):
-            start_button_brighter.show_me()
+            if self.interaction:
+                start_button_brighter.show_me()
+            else:
+                pass
 
             if pygame.mouse.get_pressed()[0]:
                 return True
 
         else:
-            start_button.show_me()
+            self.show_me()
 
 
 space_ship = SpaceShip()
@@ -230,14 +238,43 @@ meteor_count = 0
 
 Earth = Earth()
 
+
+# buttons variables
 game_over_button = Button(win_width // 2 - 180, win_height // 2 - 200,
                           pygame.image.load("button/game_over_button.png").convert_alpha())
 
 start_button = Button(win_width // 2 - 230, win_height // 2 - 120,
-                      pygame.image.load("button/start_button.png").convert_alpha())
+                      pygame.image.load("button/start_button.png").convert_alpha(), True)
 
 start_button_brighter = Button(win_width // 2 - 230, win_height // 2 - 120,
                                pygame.image.load("button/start_button_brighter.png").convert_alpha())
+
+music_button_x, music_button_y = win_width - 90, win_width - 90
+
+music_on_button = Button(music_button_x, music_button_y, pygame.image.load("button/music_on.png").convert_alpha())
+music_off_button = Button(music_button_x, music_button_y, pygame.image.load("button/music_off.png").convert_alpha())
+
+music_on = True
+
+button_down = False
+
+
+def music_play_or_stop():
+    global music_on, button_down
+    if pygame.mouse.get_pressed()[0] and not button_down and (music_on_button.is_clicked() or music_off_button.is_clicked()):
+        music_on = not music_on
+        button_down = True
+
+    elif not pygame.mouse.get_pressed()[0]:  # this is handling the single button press
+        button_down = False
+
+    if music_on:
+        pygame.mixer.music.unpause()
+        music_on_button.show_me()
+
+    else:
+        pygame.mixer.music.pause()
+        music_off_button.show_me()
 
 
 def blit_some_things():
@@ -310,7 +347,7 @@ while running:
         if score == 5:
             FPS = 65
 
-        if score == 15:
+        if score == 10:
             FPS = 75
 
         # collision for meteor and spaceship
@@ -357,9 +394,6 @@ while running:
         score_text = my_font.render(f"Your score: {score}", False, (255, 255, 255))
         win.blit(score_text, (20, 20))
 
-        pygame.display.update()
-        clock.tick(FPS)
-
         if space_ship.health == 0 or score < -5:
             lost_start_new_game = True
 
@@ -376,9 +410,6 @@ while running:
         Earth.show_me()
         score_text = my_font.render(f"Your score was: {score}", False, (255, 255, 255))
         win.blit(score_text, (20, 20))
-
-        pygame.display.update()
-        clock.tick(FPS)
 
         while explosion_of_space_ship.explode_:
             explosion_of_space_ship.explode()
@@ -419,8 +450,6 @@ while running:
         FPS = 60
         blit_some_things()
         game_over_button.show_me()
-        pygame.display.update()
-        clock.tick(FPS)
         time.sleep(2)
         lost_start_new_game = False
         start_new_game = True
@@ -432,15 +461,16 @@ while running:
         if not start_button.is_clicked():
             Earth.show_me()
             win.blit(space_ship.image, (space_ship.x, space_ship.y))
-            pygame.display.update()
-            clock.tick(FPS)
         else:
             start_new_game = False
             space_ship_explosion = False
             space_ship.x = win_width // 2 - space_ship.width + 70  # 70 is for the space ship to be perfectly in middle
             score = 0
-            pygame.display.update()
-            clock.tick(FPS)
+
+    music_play_or_stop()
+
+    pygame.display.update()
+    clock.tick(FPS)
 
 
 pygame.quit()

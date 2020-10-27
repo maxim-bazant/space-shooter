@@ -1,4 +1,4 @@
-#  tutorial 7 - sound effects + pixel perfect collision
+#  tutorial 7 - sound effects + pixel perfect collision + music
 
 import pygame
 import random

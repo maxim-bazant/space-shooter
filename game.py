@@ -56,7 +56,7 @@ class SpaceShip(object):
         self.right = False
         self.left = False
         self.vel = 8
-        self.health = 10
+        self.health = 5
         self.hit_box = (self.x, self.y, self.width, self.height)
 
     def rotate(self, right: bool, left: bool):
@@ -96,7 +96,7 @@ class SpaceShip(object):
 
     def health_bar(self):
         pygame.draw.rect(win, (255, 0, 0), (self.x, self.y + self.height + 20, self.width, 10))
-        pygame.draw.rect(win, (0, 255, 0), (self.x, self.y + self.height + 20, self.width / 10 * self.health, 10))
+        pygame.draw.rect(win, (0, 255, 0), (self.x, self.y + self.height + 20, self.width / 5 * self.health, 10))
 
 
 class Missile(object):
@@ -418,7 +418,7 @@ while running:
             clock.tick(FPS)
 
         lost_start_new_game = True
-        space_ship.health = 10
+        space_ship.health = 5
 
     elif lost_start_new_game and not space_ship.health == 0:
         if not space_ship_explosion:
